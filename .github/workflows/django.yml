@@ -40,19 +40,23 @@ jobs:
 
       - name: Create deployment package
         run: |
-          # Create a directory for deployment
-          mkdir -p deploy_package
-          
-          # Copy all application files
-          cp -r . deploy_package/
-          
-          # Create deployment package
-          cd deploy_package
-          zip -r ../deploy.zip .
-          cd ..
+          # Create deployment zip directly without copying to subdirectory
+          zip -r deploy.zip . \
+            -x "*.git*" \
+            -x "*__pycache__*" \
+            -x "*.pyc" \
+            -x "*.db.sqlite3" \
+            -x "*.log" \
+            -x ".env*" \
+            -x "venv/*" \
+            -x "env/*" \
+            -x "deploy.zip" \
+            -x "*.vscode/*" \
+            -x "*.idea/*"
           
           # Verify zip file was created
           ls -la deploy.zip
+          echo "Deployment package size: $(du -sh deploy.zip | cut -f1)"
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
@@ -71,8 +75,13 @@ jobs:
         with:
           name: deploy-package
 
+      - name: Verify deployment package
+        run: |
+          ls -la deploy.zip
+          unzip -t deploy.zip
+
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
