@@ -1,0 +1,101 @@
+{% extends "admin_home.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <div class="page-subtitle">Admin / Auctions</div>
+    <h1 class="page-title">Item Details</h1>
+  </div>
+  <a href="{% url 'admin_auctions_list' %}" class="btn-outline-gold">
+    <i class="bx bx-arrow-back"></i> Back to Auctions
+  </a>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start;">
+
+  <!-- Left: Details -->
+  <div style="display:flex; flex-direction:column; gap:20px;">
+
+    <!-- Main Info Card -->
+    <div style="background:var(--warm-white); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">
+      <div style="padding:18px 28px; border-bottom:1px solid var(--border); background:var(--cream);">
+        <div style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text-light); margin-bottom:6px;">Item Overview</div>
+        <h2 style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--text-dark);">{{ item.item_name }}</h2>
+      </div>
+      <div style="padding:28px; display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+
+        <div>
+          <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:6px;">Owner</div>
+          <div style="font-size:15px; color:var(--text-dark); font-weight:600;">{{ item.owner_name }}</div>
+        </div>
+
+        <div>
+          <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:6px;">Start Price</div>
+          <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--accent);">${{ item.item_start_price }}</div>
+        </div>
+
+        <div>
+          <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:6px;">Highest Bid</div>
+          {% if highest_bid %}
+            <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--info);">${{ highest_bid }}</div>
+          {% else %}
+            <div style="font-size:14px; color:var(--text-light);">No bids yet</div>
+          {% endif %}
+        </div>
+
+        <div>
+          <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:6px;">Auction Ends</div>
+          <div style="font-size:14px; color:var(--text-dark); font-weight:500;">{{ item.auction_end_date }}</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div style="background:var(--warm-white); border:1px solid var(--border); border-radius:14px; padding:28px; box-shadow:var(--shadow-sm);">
+      <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:12px;">Description</div>
+      <p style="color:var(--text-mid); font-size:14px; line-height:1.8;">{{ item.item_description }}</p>
+    </div>
+
+    <!-- Winner Info -->
+    {% if winner_name %}
+    <div style="background:var(--success-bg); border:1px solid rgba(26,122,74,0.2); border-radius:14px; padding:28px;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="width:40px; height:40px; background:var(--success); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+          <i class="bx bx-trophy" style="font-size:20px; color:#fff;"></i>
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--success); font-weight:700;">Auction Result</div>
+          <div style="font-size:13px; color:var(--text-mid); margin-top:2px;">This auction has concluded</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:11px; color:var(--text-light); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;">Winner</div>
+          <div style="font-size:18px; font-weight:700; color:var(--text-dark);">{{ winner_name }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--text-light); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;">Sold For</div>
+          <div style="font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--success);">${{ soldout_price }}</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Right: Image -->
+  <div>
+    <div style="background:var(--warm-white); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">
+      
+      <img src="{{ item.item_image.url }}" style="width:100%; display:block; aspect-ratio:4/3; object-fit:cover;">
+      
+      <div style="padding:14px 18px; border-top:1px solid var(--border); background:var(--cream);">
+        <div style="font-size:12px; color:var(--text-light); text-align:center; font-weight:500;">{{ item.item_name }}</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

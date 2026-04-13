@@ -1,0 +1,137 @@
+{% extends "user_home.html" %}
+
+{% block content %}
+
+<div style="max-width:720px;">
+  <div class="page-header">
+    <div>
+      <div class="page-subtitle">Place Your Bid</div>
+      <h1 class="page-title">{{ item.item_name }}</h1>
+    </div>
+  </div>
+
+  <!-- Item Overview Card -->
+  <div style="background:var(--warm-white); border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:24px;">
+    <div style="display:grid; grid-template-columns:220px 1fr;">
+
+      <!-- Image -->
+      <div style="border-right:1px solid var(--border);">
+        <img src="{{ item.item_image.url }}" style="width:100%; height:100%; object-fit:cover; min-height:200px;">
+      </div>
+
+      <!-- Info -->
+      <div style="padding:28px; display:flex; flex-direction:column; justify-content:center; gap:22px;">
+
+        <!-- Live bid status -->
+        <div style="display:inline-flex; align-items:center; gap:7px; background:{% if highest_bid %}var(--info-bg){% else %}var(--cream){% endif %}; border:1px solid {% if highest_bid %}rgba(21,96,168,0.2){% else %}var(--border){% endif %}; border-radius:8px; padding:8px 16px; width:fit-content;">
+          <span style="width:7px; height:7px; background:{% if highest_bid %}var(--info){% else %}var(--text-light){% endif %}; border-radius:50%; display:block;"></span>
+          <span style="font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:{% if highest_bid %}var(--info){% else %}var(--text-light){% endif %};">
+            {% if highest_bid %}Active Bidding{% else %}No Bids Yet{% endif %}
+          </span>
+        </div>
+
+        {% if highest_bid %}
+        <div>
+          <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:6px;">Current Highest Bid</div>
+          <div style="font-family:'Playfair Display',serif; font-size:42px; font-weight:700; color:var(--info); line-height:1;">${{ highest_bid.bid_amount }}</div>
+          <div style="font-size:13px; color:var(--text-light); margin-top:6px;">
+            by <span style="color:var(--text-dark); font-weight:600;">{{ highest_bid.bidder.username }}</span>
+          </div>
+        </div>
+        {% else %}
+        <div>
+          <div style="font-family:'Playfair Display',serif; font-size:28px; font-weight:600; color:var(--text-light);">Be the first!</div>
+          <div style="font-size:13px; color:var(--text-light); margin-top:4px;">No bids have been placed yet.</div>
+        </div>
+        {% endif %}
+
+        <div style="display:flex; gap:24px; padding-top:16px; border-top:1px solid var(--border);">
+          <div>
+            <div style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:4px;">Start Price</div>
+            <div style="font-family:'Playfair Display',serif; font-size:22px; color:var(--accent); font-weight:700;">${{ item.item_start_price }}</div>
+          </div>
+          <div style="width:1px; background:var(--border);"></div>
+          <div>
+            <div style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:4px;">Closes</div>
+            <div style="font-size:14px; color:var(--text-dark); font-weight:600;">{{ item.auction_end_date }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bid Form -->
+  <div style="background:var(--warm-white); border:1px solid var(--border); border-radius:16px; padding:32px; box-shadow:var(--shadow-sm);">
+
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--border);">
+      <div style="width:38px; height:38px; background:var(--navy); border-radius:9px; display:flex; align-items:center; justify-content:center;">
+        <i class="bx bx-trending-up" style="font-size:19px; color:#fff;"></i>
+      </div>
+      <div>
+        <div style="font-size:14px; font-weight:700; color:var(--text-dark);">Submit Your Bid</div>
+        <div style="font-size:12px; color:var(--text-light);">Enter an amount higher than the current bid</div>
+      </div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div style="margin-bottom:24px;">
+        <label style="display:block; font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-mid); margin-bottom:10px;">Bid Amount (USD)</label>
+        <div style="position:relative;">
+          <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-family:'Playfair Display',serif; font-size:22px; color:var(--accent); font-weight:700; line-height:1;">$</span>
+          <input
+            type="number"
+            name="bid_amount"
+            id="bid_amount"
+            min="0"
+            step="0.01"
+            required
+            style="width:100%; background:var(--cream); border:2px solid var(--border); border-radius:10px; padding:16px 16px 16px 44px; color:var(--text-dark); font-family:'Inter',sans-serif; font-size:20px; font-weight:700; outline:none; transition:all 0.2s;"
+            placeholder="0.00"
+            onfocus="this.style.borderColor='var(--navy)'; this.style.background='#fff'; this.style.boxShadow='0 0 0 3px rgba(15,32,68,0.07)'"
+            onblur="this.style.borderColor='var(--border)'; this.style.background='var(--cream)'; this.style.boxShadow='none'"
+          >
+        </div>
+        {% if highest_bid %}
+        <div style="font-size:12px; color:var(--text-light); margin-top:8px; display:flex; align-items:center; gap:6px;">
+          <i class="bx bx-info-circle" style="color:var(--info);"></i>
+          Must exceed current highest bid of <span style="color:var(--info); font-weight:600;">${{ highest_bid.bid_amount }}</span>
+        </div>
+        <div id="converted_value" style="margin-top:10px; font-size:14px; color:var(--navy); font-weight:600;"></div>
+        {% endif %}
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center;">
+        <button type="submit" class="btn-gold" style="padding:13px 32px; font-size:13px;">
+          <i class="bx bx-gavel"></i> Confirm Bid
+        </button>
+        <a href="{% url 'item_details' item_id=item.id %}" class="btn-outline-gold" style="padding:13px 24px; font-size:13px;">
+          <i class="bx bx-arrow-back"></i> Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById("bid_amount").addEventListener("input", function () {
+    let amount = this.value;
+
+    if (amount === "" || amount <= 0) {
+        document.getElementById("converted_value").innerHTML = "";
+        return;
+    }
+
+    fetch(`/api/convert-euro/?amount=${amount}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.converted) {
+                document.getElementById("converted_value").innerHTML =
+                    "Converted to EUR: €" + data.converted;
+            }
+        });
+});
+</script>
+
+
+{% endblock %}

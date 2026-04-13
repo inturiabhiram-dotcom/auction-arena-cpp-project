@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Bids</title>
+</head>
+<body>
+    <h1>Your Bids</h1>
+
+    {% if bid_details %}
+        <table border="1">
+            <tr>
+                <th>Item Image</th>
+                <th>Item Name</th>
+                <th>Starting Price</th>
+                <th>Highest Bid</th>
+                <th>Your Bid</th>
+                <th>Closing Date</th>
+            </tr>
+            {% for bid in bid_details %}
+                <tr>
+                    <td>
+                        {% if bid.item_image %}
+                            <img src="{{ bid.item_image }}" alt="{{ bid.item_name }}" width="100">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+                    <td>{{ bid.item_name }}</td>
+                    <td>${{ bid.start_price }}</td>
+                    <td>${{ bid.highest_bid }}</td>
+                    <td>${{ bid.your_bid }}</td>
+                    <td>{{ bid.closing_date }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>You have not placed any bids yet.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% extends "admin_home.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <div class="page-subtitle">Admin / Members</div>
+    <h1 class="page-title">All Members</h1>
+  </div>
+  <div style="background:var(--info-bg); border:1px solid rgba(21,96,168,0.2); border-radius:20px; padding:7px 18px; font-size:13px; color:var(--info); font-weight:600;">
+    {{ users|length }} Members
+  </div>
+</div>
+
+<div class="premium-table-wrap">
+  <table class="premium-table">
+    <thead>
+      <tr>
+        <th>Member</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for x in users %}
+      <tr>
+        <td>
+          <div style="width:36px; height:36px; background:var(--navy); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:#fff;">
+            {{ x.username|first|upper }}
+          </div>
+        </td>
+        <td>
+          <span style="font-weight:600; color:var(--text-dark);">{{ x.username }}</span>
+        </td>
+        <td>
+          <span style="color:var(--text-light); font-size:13px;">{{ x.email }}</span>
+        </td>
+        <td><span style="color:var(--text-mid);">{{ x.firstname }}</span></td>
+        <td><span style="color:var(--text-mid);">{{ x.lastname }}</span></td>
+        <td>
+          <span style="color:var(--text-light); font-size:13px;">{{ x.phone }}</span>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align:center; padding:80px 20px; color:var(--text-light);">
+          <i class="bx bx-group" style="font-size:48px; display:block; margin-bottom:14px; opacity:0.2;"></i>
+          <div style="font-size:14px; font-weight:500; color:var(--text-mid);">No members registered yet.</div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "user_home.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Won Auctions -->
+<div class="page-header">
+  <div>
+    <div class="page-subtitle">My Collection</div>
+    <h1 class="page-title">Auctions Won</h1>
+  </div>
+  {% if won_details %}
+  <div style="background:var(--success-bg); border:1px solid rgba(26,122,74,0.2); border-radius:20px; padding:7px 18px; font-size:13px; color:var(--success); font-weight:600; display:flex; align-items:center; gap:7px;">
+    <i class="bx bx-trophy" style="font-size:15px;"></i> {{ won_details|length }} Won
+  </div>
+  {% endif %}
+</div>
+
+<div class="premium-table-wrap" style="margin-bottom:40px;">
+  <table class="premium-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Name</th>
+        <th>Start Price</th>
+        <th>Winning Bid</th>
+        <th>Closed On</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if won_details %}
+        {% for win in won_details %}
+        <tr>
+          <td><img src="{{ win.item_image.url }}" class="item-thumb" alt="{{ win.item_name }}"></td>
+          <td><span style="font-weight:600; color:var(--text-dark);">{{ win.item_name }}</span></td>
+          <td><span class="price-tag">${{ win.start_price }}</span></td>
+          <td>
+            <span style="display:inline-flex; align-items:center; gap:6px; background:var(--success-bg); border:1px solid rgba(26,122,74,0.2); color:var(--success); border-radius:18px; padding:5px 14px; font-size:13px; font-weight:700; font-family:'Playfair Display',serif;">
+              <i class="bx bx-trophy" style="font-size:13px;"></i> ${{ win.winning_bid }}
+            </span>
+          </td>
+          <td><span class="closing-date">{{ win.closing_date }}</span></td>
+        </tr>
+        {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="5" style="text-align:center; padding:60px 20px; color:var(--text-light);">
+          <div style="width:60px; height:60px; background:var(--cream); border:1px solid var(--border); border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">
+            <i class="bx bx-trophy" style="font-size:28px; opacity:0.3; color:var(--accent);"></i>
+          </div>
+          <div style="font-size:14px; font-weight:500; color:var(--text-mid);">No wins yet. Keep bidding!</div>
+          <div style="font-size:13px; margin-top:4px;">Your won auctions will appear here.</div>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<!-- All Bids -->
+<div class="page-header">
+  <div>
+    <div class="page-subtitle">Activity</div>
+    <h1 class="page-title">All Your Bids</h1>
+  </div>
+</div>
+
+<div class="premium-table-wrap">
+  <table class="premium-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Name</th>
+        <th>Start Price</th>
+        <th>Highest Bid</th>
+        <th>Your Bid</th>
+        <th>Closing Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if bid_details %}
+        {% for bid in bid_details %}
+        <tr>
+          <td><img src="{{ bid.item_image.url }}" class="item-thumb" alt="{{ bid.item_name }}"></td>
+          <td><span style="font-weight:600; color:var(--text-dark);">{{ bid.item_name }}</span></td>
+          <td><span class="price-tag">${{ bid.start_price }}</span></td>
+          <td><span class="highest-bid-tag">${{ bid.highest_bid }}</span></td>
+          <td>
+            {% if bid.your_bid == bid.highest_bid %}
+              <span style="display:inline-flex; align-items:center; gap:4px; color:var(--success); font-weight:700; font-family:'Playfair Display',serif; font-size:15px;">
+                <i class="bx bx-up-arrow-alt" style="font-size:16px;"></i> ${{ bid.your_bid }}
+              </span>
+            {% else %}
+              <span style="color:var(--danger); font-family:'Playfair Display',serif; font-size:15px; font-weight:600;">${{ bid.your_bid }}</span>
+            {% endif %}
+          </td>
+          <td><span class="closing-date">{{ bid.closing_date }}</span></td>
+        </tr>
+        {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="6" style="text-align:center; padding:60px 20px; color:var(--text-light);">
+          <div style="width:60px; height:60px; background:var(--cream); border:1px solid var(--border); border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">
+            <i class="bx bx-bookmarks" style="font-size:28px; opacity:0.3;"></i>
+          </div>
+          <div style="font-size:14px; font-weight:500; color:var(--text-mid);">No bids placed yet.</div>
+          <div style="font-size:13px; margin-top:4px;">Visit Live Auctions to start bidding.</div>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

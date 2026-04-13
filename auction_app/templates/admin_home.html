@@ -1,0 +1,505 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/" data-template="vertical-menu-template-free">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+  <title>AuctionArena — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/vendor/css/core.css' %}" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="{% static 'assets/vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/vendor/libs/apex-charts/apex-charts.css' %}" />
+  <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+  <script src="{% static 'assets/js/config.js' %}"></script>
+
+  <style>
+    :root {
+      --navy: #0F2044;
+      --navy-mid: #1A3260;
+      --navy-light: #2A4A80;
+      --accent: #C8922A;
+      --accent-light: #E8B84B;
+      --accent-dim: rgba(200,146,42,0.1);
+      --cream: #FAF8F4;
+      --warm-white: #FFFFFF;
+      --surface: #FFFFFF;
+      --surface2: #F5F3EF;
+      --text-dark: #1A1A2E;
+      --text-mid: #4A4A6A;
+      --text-light: #8A8AA8;
+      --border: #E8E5DE;
+      --border-light: #F0EDE8;
+      --success: #1A7A4A;
+      --success-bg: #F0FAF5;
+      --danger: #C0392B;
+      --danger-bg: #FDF3F2;
+      --info: #1560A8;
+      --info-bg: #EFF5FF;
+      --sidebar-w: 260px;
+      --shadow-sm: 0 1px 4px rgba(15,32,68,0.07);
+      --shadow: 0 4px 16px rgba(15,32,68,0.1);
+      --shadow-lg: 0 12px 40px rgba(15,32,68,0.14);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html,body { height:100%; background:var(--cream); color:var(--text-dark); font-family:'Inter',sans-serif; overflow-x:hidden; }
+
+    .layout-wrapper { display:flex; min-height:100vh; }
+
+    /* SIDEBAR */
+    #layout-menu {
+      width:var(--sidebar-w);
+      min-height:100vh;
+      background:var(--navy);
+      display:flex;
+      flex-direction:column;
+      position:fixed;
+      top:0; left:0;
+      z-index:1000;
+      overflow-y:auto;
+    }
+
+    .app-brand {
+      padding:24px 24px 20px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .app-brand-link { text-decoration:none !important; display:flex; align-items:center; gap:12px; }
+
+    .brand-icon {
+      width:36px; height:36px;
+      background:var(--accent);
+      border-radius:9px;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+    }
+
+    .brand-icon i { font-size:19px; color:#fff; }
+
+    .brand-logo-text {
+      font-family:'Playfair Display',serif;
+      font-size:18px;
+      font-weight:700;
+      color:#fff !important;
+      letter-spacing:0.5px;
+    }
+
+    .brand-tagline {
+      font-size:10px;
+      color:rgba(255,255,255,0.35);
+      letter-spacing:2px;
+      text-transform:uppercase;
+      margin-top:2px;
+    }
+
+    .admin-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      background:rgba(200,146,42,0.15);
+      border:1px solid rgba(200,146,42,0.3);
+      color:var(--accent-light);
+      font-size:10px;
+      font-weight:600;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      padding:4px 10px;
+      border-radius:5px;
+      margin-top:10px;
+    }
+
+    .menu-inner { padding:12px 0; flex:1; }
+
+    .menu-section-label {
+      font-size:9px;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.3);
+      padding:16px 20px 8px;
+    }
+
+    .menu-item { list-style:none; }
+
+    .menu-link {
+      display:flex;
+      align-items:center;
+      gap:11px;
+      padding:10px 20px;
+      color:rgba(255,255,255,0.55) !important;
+      text-decoration:none !important;
+      font-size:13px;
+      font-weight:500;
+      transition:all 0.18s;
+      border-left:3px solid transparent;
+      margin:1px 0;
+    }
+
+    .menu-link:hover, .menu-item.active .menu-link {
+      color:#fff !important;
+      background:rgba(255,255,255,0.07);
+      border-left-color:var(--accent);
+    }
+
+    .menu-link i { font-size:17px; }
+
+    /* MAIN */
+    .layout-page {
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+      margin-left:var(--sidebar-w);
+      padding-left: 0;
+    }
+
+    /* NAVBAR */
+    #layout-navbar {
+      background:var(--warm-white);
+      border-bottom:1px solid var(--border);
+      padding:0 36px;
+      height:60px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      position:sticky;
+      top:0;
+      z-index:500;
+      box-shadow:var(--shadow-sm);
+    }
+
+    .navbar-nav-right { display:flex; align-items:center; gap:16px; width:100%; }
+
+    .search-wrap {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:var(--cream);
+      border:1.5px solid var(--border);
+      border-radius:8px;
+      padding:8px 14px;
+      flex:1;
+      max-width:360px;
+      transition:all 0.2s;
+    }
+
+    .search-wrap:focus-within {
+      border-color:var(--navy);
+      box-shadow:0 0 0 3px rgba(15,32,68,0.06);
+      background:#fff;
+    }
+
+    .search-wrap i { color:var(--text-light); font-size:16px; }
+
+    .search-wrap input {
+      background:transparent;
+      border:none;
+      outline:none;
+      color:var(--text-dark);
+      font-family:'Inter',sans-serif;
+      font-size:13px;
+      width:100%;
+    }
+
+    .search-wrap input::placeholder { color:var(--text-light); }
+
+    .nav-user-section { display:flex; align-items:center; gap:14px; margin-left:auto; }
+
+    .avatar-circle {
+      width:34px; height:34px;
+      background:var(--navy);
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Playfair Display',serif;
+      font-size:14px;
+      font-weight:700;
+      color:#fff;
+      cursor:pointer;
+    }
+
+    .dropdown-menu {
+      background:var(--warm-white) !important;
+      border:1.5px solid var(--border) !important;
+      border-radius:10px !important;
+      box-shadow:var(--shadow-lg) !important;
+      padding:8px !important;
+    }
+
+    .dropdown-item {
+      color:var(--text-mid) !important;
+      font-size:13px;
+      border-radius:6px;
+      padding:9px 14px !important;
+      transition:all 0.15s;
+    }
+
+    .dropdown-item:hover { background:var(--cream) !important; color:var(--navy) !important; }
+    .dropdown-divider { border-color:var(--border) !important; }
+
+    /* CONTENT */
+    .layout-content { flex:1; padding:32px 40px; background:var(--cream); }
+
+    /* ALERTS */
+    .alert-container { padding:0 40px; margin-top:14px; }
+    .alert { border-radius:8px; font-size:13px; }
+    .alert-success { background:var(--success-bg); color:var(--success); border:1px solid rgba(26,122,74,0.2); }
+    .alert-danger { background:var(--danger-bg); color:var(--danger); border:1px solid rgba(192,57,43,0.2); }
+    .alert-warning { background:#FFFBF0; color:#A07010; border:1px solid rgba(200,146,42,0.3); }
+
+    /* TABLE */
+    .premium-table-wrap {
+      background:var(--warm-white);
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:var(--shadow-sm);
+    }
+
+    .premium-table { width:100%; border-collapse:collapse; }
+
+    .premium-table thead tr {
+      background:var(--cream);
+      border-bottom:1.5px solid var(--border);
+    }
+
+    .premium-table thead th {
+      padding:14px 20px;
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--text-light);
+    }
+
+    .premium-table tbody tr {
+      border-bottom:1px solid var(--border-light);
+      transition:background 0.15s;
+    }
+
+    .premium-table tbody tr:last-child { border-bottom:none; }
+    .premium-table tbody tr:hover { background:#FDFCFA; }
+
+    .premium-table tbody td {
+      padding:15px 20px;
+      font-size:13px;
+      color:var(--text-dark);
+      vertical-align:middle;
+    }
+
+    /* BUTTONS */
+    .btn-gold {
+      background:var(--navy);
+      color:#fff !important;
+      border:none;
+      padding:8px 18px;
+      border-radius:7px;
+      font-size:11px;
+      font-weight:600;
+      letter-spacing:0.8px;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:all 0.2s;
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:6px;
+    }
+
+    .btn-gold:hover { background:var(--navy-mid); box-shadow:var(--shadow); transform:translateY(-1px); }
+
+    .btn-cyan-soft {
+      background:var(--info-bg);
+      color:var(--info) !important;
+      border:1px solid rgba(21,96,168,0.2);
+      padding:8px 18px; border-radius:7px;
+      font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
+      cursor:pointer; transition:all 0.2s;
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:6px;
+    }
+
+    .btn-cyan-soft:hover { background:#DFF0FF; }
+
+    .btn-danger-soft {
+      background:var(--danger-bg);
+      color:var(--danger) !important;
+      border:1px solid rgba(192,57,43,0.2);
+      padding:8px 18px; border-radius:7px;
+      font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
+      cursor:pointer; transition:all 0.2s;
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:6px;
+    }
+
+    .btn-danger-soft:hover { background:#FDEAE8; }
+
+    .btn-outline-gold {
+      background:transparent;
+      color:var(--navy) !important;
+      border:1.5px solid var(--border);
+      padding:8px 18px; border-radius:7px;
+      font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
+      cursor:pointer; transition:all 0.2s;
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:6px;
+    }
+
+    .btn-outline-gold:hover { background:var(--cream); border-color:var(--navy); }
+
+    .item-thumb {
+      width:68px; height:52px;
+      object-fit:cover;
+      border-radius:8px;
+      border:1px solid var(--border);
+    }
+
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+
+    .page-title {
+      font-family:'Playfair Display',serif;
+      font-size:28px;
+      font-weight:700;
+      color:var(--text-dark);
+    }
+
+    .page-subtitle {
+      font-size:11px;
+      color:var(--text-light);
+      letter-spacing:2px;
+      text-transform:uppercase;
+      margin-bottom:4px;
+    }
+
+    .price-tag {
+      font-family:'Playfair Display',serif;
+      font-size:15px;
+      font-weight:600;
+      color:var(--accent);
+    }
+
+    .highest-bid-tag {
+      font-family:'Playfair Display',serif;
+      font-size:15px;
+      font-weight:700;
+      color:var(--info);
+    }
+
+    .closing-date { color:var(--text-light); font-size:12px; }
+
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--cream); }
+    ::-webkit-scrollbar-thumb { background:rgba(15,32,68,0.15); border-radius:3px; }
+  </style>
+</head>
+
+<body>
+<div class="layout-wrapper">
+
+  <aside id="layout-menu">
+    <div class="app-brand">
+      <a href="#" class="app-brand-link">
+        <div>
+          <div class="brand-logo-text">AuctionArena</div>
+          <div class="brand-tagline">Control Panel</div>
+        </div>
+      </a>
+    </div>
+
+    {% block nav %}
+    <div class="menu-inner">
+      <div class="menu-section-label">Management</div>
+      <ul style="list-style:none; padding:0;">
+        <li class="menu-item active" style="width:300px">
+          <a href="{% url 'admin_auctions_list' %}" class="menu-link">
+            <i class="bx bx-collection"></i>
+            <span>All Auctions</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{% url 'admin_all_bids' %}" class="menu-link">
+            <i class="bx bx-trending-up"></i>
+            <span>All Bids</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{% url 'admin_users_list' %}" class="menu-link">
+            <i class="bx bx-group"></i>
+            <span>Members</span>
+          </a>
+        </li>
+      </ul>
+      <div class="menu-section-label" style="margin-top:16px; ">Account</div>
+      <ul style="list-style:none; padding:0;">
+        <li class="menu-item"  style="width:300px">
+          <a href="{% url 'logout_page' %}" class="menu-link">
+            <i class="bx bx-power-off"></i>
+            <span>Sign Out</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    {% endblock %}
+  </aside>
+
+  <div class="layout-page" style="padding:0;">
+    <nav id="layout-navbar">
+      <div class="navbar-nav-right">
+        {% block search %}
+        <div class="search-wrap">
+          <i class="bx bx-search"></i>
+          <form id="searchForm" method="GET" style="flex:1;">
+            <input type="text" placeholder="Search auctions, members..." name="query" id="searchInput"/>
+          </form>
+        </div>
+        {% endblock %}
+
+        <div class="nav-user-section">
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:var(--text-light);">Signed in as</div>
+            <div style="font-size:13px; color:var(--text-dark); font-weight:600;">{{ request.user.username }}</div>
+          </div>
+          <div class="dropdown">
+            <div class="avatar-circle" data-bs-toggle="dropdown">
+              {{ request.user.username|first|upper }}
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><span class="dropdown-item" style="pointer-events:none; opacity:0.5; font-size:11px; letter-spacing:1px; text-transform:uppercase;">{{ request.user.username }}</span></li>
+              <li><div class="dropdown-divider"></div></li>
+              <li><a class="dropdown-item" href="{% url 'logout_page' %}"><i class="bx bx-power-off me-2"></i>Sign Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    {% if messages %}
+    <div class="alert-container">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="layout-content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script>
+  document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchForm').submit(); }
+  });
+</script>
+</body>
+</html>

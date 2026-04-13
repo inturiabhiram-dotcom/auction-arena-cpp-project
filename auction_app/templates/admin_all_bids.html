@@ -1,0 +1,72 @@
+{% extends "admin_home.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <div class="page-subtitle">Admin / Monitoring</div>
+    <h1 class="page-title">All Bids</h1>
+  </div>
+  <div style="background:var(--info-bg); border:1px solid rgba(21,96,168,0.2); border-radius:20px; padding:7px 18px; font-size:13px; color:var(--info); font-weight:600;">
+    {{ bid_details|length }} Total Bids
+  </div>
+</div>
+
+<div class="premium-table-wrap">
+  <table class="premium-table">
+    <thead>
+      <tr>
+        <th>Bid ID</th>
+        <th>Item</th>
+        <th>Item Name</th>
+        <th>Bidder</th>
+        <th>Bid Amount</th>
+        <th>Date & Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for bid in bid_details %}
+      <tr>
+        <td>
+          <span style="font-size:12px; color:var(--text-light); font-weight:600;">#{{ bid.bid_id }}</span>
+        </td>
+        <td>
+          {% if bid.item_image %}
+          <img src="{{ bid.item_image }}" class="item-thumb" alt="Item">
+          {% else %}
+          <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; background:var(--cream); color:var(--text-light);">
+            <i class="bx bx-image" style="font-size:22px;"></i>
+          </div>
+          {% endif %}
+        </td>
+        <td>
+          <span style="font-weight:600; color:var(--text-dark);">{{ bid.item_name }}</span>
+        </td>
+        <td>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:32px; height:32px; background:var(--navy); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:#fff;">
+              {{ bid.bidder|first|upper }}
+            </div>
+            <span style="font-size:13px; color:var(--text-dark); font-weight:500;">{{ bid.bidder }}</span>
+          </div>
+        </td>
+        <td>
+          <span style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--info);">${{ bid.bid_amount }}</span>
+        </td>
+        <td>
+          <span style="font-size:12px; color:var(--text-light);">{{ bid.bid_date_time }}</span>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align:center; padding:80px 20px; color:var(--text-light);">
+          <i class="bx bx-trending-up" style="font-size:48px; display:block; margin-bottom:14px; opacity:0.2;"></i>
+          <div style="font-size:14px; font-weight:500; color:var(--text-mid);">No bids placed yet.</div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

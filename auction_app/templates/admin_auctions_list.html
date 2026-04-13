@@ -1,0 +1,96 @@
+{% extends "admin_home.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <div class="page-subtitle">Admin / Overview</div>
+    <h1 class="page-title">All Auctions</h1>
+  </div>
+  <a href="{% url 'admin_add_item' %}" class="btn-gold">
+    <i class="bx bx-plus"></i> Add Item
+  </a>
+</div>
+
+<div class="premium-table-wrap">
+  <table class="premium-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Name</th>
+        <th>Start Price</th>
+        <th>Highest Bid</th>
+        <th>Closes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in item_list %}
+      <tr>
+        <!--<td>-->
+          <!--<img src="/media/{{ obj.item_image }}" class="item-thumb" alt="{{ obj.item_name }}">-->
+        <!--  <img src="{{ obj.item_image.url }}" class="item-thumb" alt="{{ obj.item_image.url }}">-->
+        <!--</td>-->
+        
+        <td>
+            {% if obj.item_image %}
+                <img src="{{ obj.item_image.url }}" class="item-thumb" alt="{{ obj.item_name }}">
+            {% else %}
+                <img src="{% static 'images/default-image.jpg' %}" class="item-thumb" alt="No image">
+            {% endif %}
+        </td>
+        
+        <td>
+          <span style="font-weight:600; color:var(--text-dark);">{{ obj.item_name }}</span>
+        </td>
+        <td><span class="price-tag">${{ obj.item_start_price }}</span></td>
+        <td>
+          {% if obj.highest_bid %}
+            <span class="highest-bid-tag">${{ obj.highest_bid }}</span>
+          {% else %}
+            <span style="color:var(--text-light); font-size:12px;">—</span>
+          {% endif %}
+        </td>
+        <td><span class="closing-date">{{ obj.auction_end_date }}</span></td>
+        <td>
+          <div style="display:flex; gap:7px; align-items:center; flex-wrap:wrap;">
+            <form method="post" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="item_id" value="{{ obj.id }}">
+              <button type="submit" name="editsubmit" value="edit" class="btn-outline-gold">
+                <i class="bx bx-edit-alt"></i> Edit
+              </button>
+            </form>
+            <a href="{% url 'item_details' item_id=obj.id %}" class="btn-cyan-soft">
+              <i class="bx bx-show-alt"></i> View
+            </a>
+            <form method="post" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="item_id" value="{{ obj.id }}">
+              <button type="submit" name="deletesubmit" value="delete" class="btn-danger-soft" onclick="return confirm('Delete this auction item?')">
+                <i class="bx bx-trash"></i> Delete
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align:center; padding:80px 20px; color:var(--text-light);">
+          <i class="bx bx-package" style="font-size:48px; display:block; margin-bottom:14px; opacity:0.25;"></i>
+          <div style="font-size:14px; font-weight:500; color:var(--text-mid);">No auctions created yet.</div>
+          <div style="font-size:13px; margin-top:6px;">Add your first item to get started.</div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchForm').submit(); }
+  });
+</script>
+{% endblock %}

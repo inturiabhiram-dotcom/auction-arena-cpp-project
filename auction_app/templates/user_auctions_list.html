@@ -1,0 +1,83 @@
+{% extends "user_home.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <div class="page-subtitle">Live Now</div>
+    <h1 class="page-title">Available Auctions</h1>
+  </div>
+</div>
+
+<div class="premium-table-wrap">
+  <table class="premium-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Name</th>
+        <th>Start Price</th>
+        <th>Highest Bid</th>
+        <th>Closing Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in item_list %}
+      <tr>
+        <!--<td>-->
+        <!--  <img src="/media/{{ obj.item_image }}" class="item-thumb" alt="{{ obj.item_name }}">-->
+        <!--</td>-->
+        
+        <td>
+            {% if obj.item_image %}
+                <img src="{{ obj.item_image.url }}" class="item-thumb" alt="{{ obj.item_name }}">
+            {% else %}
+                <img src="{% static 'images/default-image.jpg' %}" class="item-thumb" alt="No image">
+            {% endif %}
+        </td>
+        
+        
+        <td>
+          <span style="font-weight:600; color:var(--text-dark);">{{ obj.item_name }}</span>
+        </td>
+        <td><span class="price-tag">${{ obj.item_start_price }}</span></td>
+        <td>
+          {% if obj.highest_bid %}
+            <span class="highest-bid-tag">${{ obj.highest_bid }}</span>
+          {% else %}
+            <span style="font-size:12px; color:var(--text-light); background:var(--cream); padding:3px 10px; border-radius:12px; border:1px solid var(--border);">No bids yet</span>
+          {% endif %}
+        </td>
+        <td>
+          <span class="closing-date">{{ obj.auction_end_date }}</span>
+        </td>
+        <td>
+          <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ obj.id }}">
+            <button type="submit" name="bidsubmit" value="bid" class="btn-gold">
+              <i class="bx bx-trending-up"></i> Place Bid
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align:center; padding:80px 20px; color:var(--text-light);">
+          <i class="bx bx-package" style="font-size:48px; display:block; margin-bottom:14px; opacity:0.2;"></i>
+          <div style="font-size:14px; font-weight:500; color:var(--text-mid);">No auctions available at the moment.</div>
+          <div style="font-size:13px; margin-top:6px;">Check back soon for new items.</div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchForm').submit(); }
+  });
+</script>
+{% endblock %}
