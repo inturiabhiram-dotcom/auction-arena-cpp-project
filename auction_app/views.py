@@ -338,6 +338,64 @@ class userAddCreditsView(View):
             context={"user_obj": user_obj}
         )
         
+# class userOwnBidsView(View):
+#     @method_decorator(login_required)
+#     def get(self, request, *args, **kwargs):
+
+#         bid_queryset = BidModel.objects.filter(bidder=request.user.id).order_by('-bid_time')
+
+#         bid_details = []
+#         for bid in bid_queryset:
+#             bid_details.append({
+#                 "item_image": bid.item.item_image if bid.item.item_image else None,
+#                 "item_name": bid.item.item_name,
+#                 "start_price": bid.item.item_start_price,
+#                 "highest_bid": BidModel.objects.filter(item=bid.item)
+#                                                 .aggregate(Max("bid_amount"))["bid_amount__max"],
+#                 "your_bid": bid.bid_amount,
+#                 "closing_date": bid.item.auction_end_date,
+#             })
+
+#         won_queryset = BidModel.objects.filter(
+#             bidder=request.user.id,
+#             bid_amount=Subquery(
+#                 BidModel.objects.filter(item_id=OuterRef('item_id'))
+#                                 .order_by('-bid_amount')
+#                                 .values('bid_amount')[:1]
+#             ),
+#             item__auction_end_date__lt=now()
+#         )
+
+#         won_details = []
+#         for win in won_queryset:
+#             won_details.append({
+#                 "item_image": win.item.item_image if win.item.item_image else None,
+#                 "item_name": win.item.item_name,
+#                 "start_price": win.item.item_start_price,
+#                 "winning_bid": win.bid_amount,
+#                 "closing_date": win.item.auction_end_date,
+#             })
+            
+        
+#         trigger_email_lambda(
+#         action="AUCTION_WIN",
+#         email=request.user.email,
+#         username=request.user.username,
+#         item_name=win.item.item_name,
+#         winning_price=float(win.bid_amount)
+#         )
+        
+
+#         return render(
+#             request,
+#             "user_view_own_bids.html",
+#             context={
+#                 "bid_details": bid_details,
+#                 "won_details": won_details,
+#             }
+#         )
+
+
 class userOwnBidsView(View):
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
@@ -376,15 +434,14 @@ class userOwnBidsView(View):
                 "closing_date": win.item.auction_end_date,
             })
             
-        
-        trigger_email_lambda(
-        action="AUCTION_WIN",
-        email=request.user.email,
-        username=request.user.username,
-        item_name=win.item.item_name,
-        winning_price=float(win.bid_amount)
-        )
-        
+            # Move the email trigger INSIDE the loop
+            trigger_email_lambda(
+                action="AUCTION_WIN",
+                email=request.user.email,
+                username=request.user.username,
+                item_name=win.item.item_name,
+                winning_price=float(win.bid_amount)
+            )
 
         return render(
             request,
@@ -394,8 +451,6 @@ class userOwnBidsView(View):
                 "won_details": won_details,
             }
         )
-
-
 
 import requests
 
